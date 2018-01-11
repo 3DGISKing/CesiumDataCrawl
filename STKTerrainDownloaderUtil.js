@@ -1,3 +1,4 @@
+var fs = require('fs');
 var CesiumMath = require('./CesiumMath');
 var GeographicTilingSchema = require('./GeographicTilingScheme');
 
@@ -59,17 +60,17 @@ module.exports.prepareDownloadInfoList = function(path, startLevel, endLevel, le
             for (var y = startTileY; y <= endTileY; y++) {
                 var filename = getTerranFileName(path, x, y, level);
 
-                /*if (fs.existsSync(filename)) {
-                 const stats = fs.statSync(filename);
-                 const fileSizeInBytes = stats.size;
+                if (fs.existsSync(filename)) {
+                     const stats = fs.statSync(filename);
+                     const fileSizeInBytes = stats.size;
 
-                 if (fileSizeInBytes == 0) {
-                 fs.unlinkSync(filename);
+                     if (fileSizeInBytes == 0) {
+                        fs.unlinkSync(filename);
+                     }
+                     else {
+                        continue;
+                     }
                  }
-                 else {
-                 continue;
-                 }
-                 }*/
 
                 var url = getTerrainUrl(x, y, level);
                 var headers = [];
