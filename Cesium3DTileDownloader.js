@@ -15,9 +15,12 @@ console.log("tilesetUrl = " + tilesetUrl);
 
 var options = {
     url: tilesetUrl,
-    gzip: true // note important
+    gzip: true // note that tileset.json is compressed in gzip format.
 };
 
+/*
+   first download tileset.json.
+*/
 request(options, function(err, res, body) {
     // from direct network
     var tilesetJson = JSON.parse(body);
@@ -58,6 +61,20 @@ request(options, function(err, res, body) {
 
     var infoList = [];
 
+    // first prepare root tile content
+    var urlObject = url.parse(basePath);
+
+    urlObject.pathname = urlObject.pathname + "/" + tilesetJson.root.content.url;
+
+    contentUrl = urlObject.protocol + "//" + urlObject.host +  urlObject.pathname + urlObject.search;
+
+    var filename = path + "/" + tilesetJson.root.content.url;
+
+    infoList.push({
+        url: contentUrl,
+        filename: filename
+    });
+
     while (stack.length > 0) {
         var tile = stack.pop();
 
@@ -69,13 +86,13 @@ request(options, function(err, res, body) {
             for (var i = 0; i < length; ++i) {
                 var childHeader = children[i];
 
-                var urlObject = url.parse(basePath);
+                urlObject = url.parse(basePath);
 
                 urlObject.pathname = urlObject.pathname + "/" + childHeader.content.url;
 
                 contentUrl = urlObject.protocol + "//" + urlObject.host +  urlObject.pathname + urlObject.search;
 
-                var filename = path + "/" + childHeader.content.url;
+                filename = path + "/" + childHeader.content.url;
 
                 infoList.push({
                     url: contentUrl,
