@@ -57,9 +57,21 @@ exports.recursivelyDownload = function(downloadInfoList, totalCount){
         .get(options)
         .on('response', function () {
            // debugger
+            if (this.response.statusCode == 404) {
+                console.log((totalCount - downloadInfoList.length) + "/" + totalCount  + " 404 " + downloadInfo.url + " File or directory not found");
+
+                if (fs.existsSync(filename)) {
+                    fs.unlinkSync(filename);
+                }
+
+                // close file system.
+                for (var i = 0; i < this.dests.length; i++ ) {
+                    this.dests[i].close();
+                }
+            }
         })
         .on('error', function(err) {
-            console.log("error occurs during downloading " + downloadInfo.url + " error code = " + err.code);
+            console.log((totalCount - downloadInfoList.length) + "/" + totalCount + " error occurs during downloading " + downloadInfo.url + " error code = " + err.code);
 
             if (fs.existsSync(filename)) {
                  fs.unlinkSync(filename);
@@ -71,13 +83,14 @@ exports.recursivelyDownload = function(downloadInfoList, totalCount){
             }
 
             failedDownloadInfoList.push(downloadInfo);
-
-            exports.recursivelyDownload(downloadInfoList, totalCount);
         })
         .pipe(fs.createWriteStream(filename))
         .on('close', function () {
-         //   debugger
-            console.log((totalCount - downloadInfoList.length) + "/" + totalCount +  " download completed from " + options.url + " to " + filename);
+           // debugger
+            if(this.bytesWritten > 0) {
+                console.log((totalCount - downloadInfoList.length) + "/" + totalCount +  " download completed from " + options.url + " to " + filename);
+            }
+
             exports.recursivelyDownload(downloadInfoList, totalCount);
         })
 

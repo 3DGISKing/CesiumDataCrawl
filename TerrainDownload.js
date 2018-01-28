@@ -4,8 +4,16 @@ var sTKTerrainDownloaderUtil = require('./STKTerrainDownloaderUtil');
 
 var rootPath = "E:/CesiumData/assets.agi.com/stk-terrain/world/watermask_vertexnormal";
 
-var startLevel = 0;
-var endLevel = 8;
+var startLevel = 12;
+var endLevel = 12;
+
+var koreaLeft = 124;
+var koreaRight = 131;
+var koreaWidth = koreaRight- koreaLeft;
+
+var koreaBottom = 34;
+var koreaTop = 44;
+var koreaHeight = koreaTop - koreaBottom;
 
 var left = -180;
 var right = 180;
@@ -20,9 +28,13 @@ var extensionList = [];
 extensionList.push("octvertexnormals");
 extensionList.push("watermask");
 
-var downloadInfoList = sTKTerrainDownloaderUtil.prepareDownloadInfoList(rootPath, startLevel, endLevel, left, bottom, width, height, extensionList);
+//for entire world
+//var downloadInfoList = sTKTerrainDownloaderUtil.prepareDownloadInfoList(rootPath, startLevel, endLevel, left, bottom, width, height, extensionList);
 
-console.log("total download count = ", downloadInfoList.length);
+//for only korea
+var downloadInfoList = sTKTerrainDownloaderUtil.prepareDownloadInfoList(rootPath, startLevel, endLevel, koreaLeft, koreaBottom, koreaWidth, koreaHeight, extensionList);
+
+console.log("total download Info count = ", downloadInfoList.length);
 
 DownLoader.recursivelyDownload(downloadInfoList, downloadInfoList.length);
 

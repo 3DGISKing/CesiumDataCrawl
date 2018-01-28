@@ -1,6 +1,8 @@
 var fs = require('fs');
 var CesiumMath = require('./CesiumMath');
 var GeographicTilingSchema = require('./GeographicTilingScheme');
+var STKTerrainMetaData = require('./STKTerrainMetaData.json');
+var availableTiles = STKTerrainMetaData.available;
 
 function getTerrainUrl(x, y, level) {
     var baseUrl = "http://assets.agi.com/stk-terrain/world";
@@ -21,6 +23,19 @@ function getTerranFileName(path, x, y, level) {
     return path + "/" + level + "/" + x + "/" + y + ".terrain"; // note that  gzip file format
 }
 
+function checkAvailabilty(x, y, level) {
+    var rangesAtLevel = availableTiles[level];
+
+    for (var rangeIndex = 0; rangeIndex < rangesAtLevel.length; ++rangeIndex) {
+        var range = rangesAtLevel[rangeIndex];
+
+        if(x >= range.startX && x <= range.endX && y >= range.startY && y <= range.endY)
+            return true;
+    }
+
+    return false;
+}
+
 /**
  * @param {string} path
  * @param {number} startLevel
@@ -32,6 +47,22 @@ function getTerranFileName(path, x, y, level) {
  * @param {Array} extensionsList
  */
 module.exports.prepareDownloadInfoList = function(path, startLevel, endLevel, left, bottom, width, height, extensionsList) {
+    if(startLevel > endLevel)
+    {
+        console.error("invalid start level: " + startLevel);
+        return;
+    }
+
+    if(startLevel < STKTerrainMetaData.minzoom || startLevel > STKTerrainMetaData.maxzoom) {
+        console.error("invalid start level: " + startLevel);
+        return;
+    }
+
+    if(endLevel < STKTerrainMetaData.minzoom || endLevel > STKTerrainMetaData.maxzoom) {
+        console.error("invalid end level: " + startLevel);
+        return;
+    }
+
     width = CesiumMath.toRadians(width);
     height = CesiumMath.toRadians(height);
     left = CesiumMath.toRadians(left);
@@ -70,6 +101,11 @@ module.exports.prepareDownloadInfoList = function(path, startLevel, endLevel, le
 
         for (var x = startTileX; x <= endTileX; x++) {
             for (var y = startTileY; y <= endTileY; y++) {
+                if(!checkAvailabilty(x, y, level)) {
+                    console.log("x = " + x + " y = " + y + " level = " + level + " not available!");
+                    continue;
+                }
+
                 var filename = getTerranFileName(path, x, y, level);
 
                 if (fs.existsSync(filename)) {
@@ -85,8 +121,6 @@ module.exports.prepareDownloadInfoList = function(path, startLevel, endLevel, le
                  }
 
                 var url = getTerrainUrl(x, y, level);
-
-
 
                 infoList.push({
                     url: url,
