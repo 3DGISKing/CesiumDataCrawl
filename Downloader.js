@@ -3,6 +3,8 @@ var path = require('path');
 //noinspection NpmUsedModulesInstalled
 var request = require('request');
 
+var failedDownloadInfoList = [];
+
 function mkDirPath(dirPath)
 {
     if(!fs.existsSync(dirPath))
@@ -19,9 +21,21 @@ function mkDirPath(dirPath)
     }
 }
 
-module.exports.recursivelyDownload = function(downloadInfoList){
+exports.recursivelyDownload = function(downloadInfoList, totalCount){
     if (downloadInfoList.length <= 0) {
-        console.log("all download completed!");
+        if(failedDownloadInfoList.length == 0) {
+            console.log("all download completed!");
+        }
+        else {
+            console.log("Failed count = " + failedDownloadInfoList.length);
+            console.log("retrying...\n");
+
+            downloadInfoList = failedDownloadInfoList;
+            failedDownloadInfoList = [];
+
+            exports.recursivelyDownload(downloadInfoList, totalCount);
+        }
+
         return;
     }
 
@@ -41,15 +55,30 @@ module.exports.recursivelyDownload = function(downloadInfoList){
 
     request
         .get(options)
+        .on('response', function () {
+           // debugger
+        })
         .on('error', function(err) {
-            console.log(err);
+            console.log("error occurs during downloading " + downloadInfo.url + " error code = " + err.code);
+
             if (fs.existsSync(filename)) {
-                fs.unlinkSync(filename);
+                 fs.unlinkSync(filename);
             }
+
+            // close file system.
+            for (var i = 0; i < this.dests.length; i++ ) {
+                this.dests[i].close();
+            }
+
+            failedDownloadInfoList.push(downloadInfo);
+
+            exports.recursivelyDownload(downloadInfoList, totalCount);
         })
         .pipe(fs.createWriteStream(filename))
         .on('close', function () {
-            console.log("download completed from " + options.url + " to " + filename);
-            exports.recursivelyDownload(downloadInfoList);
-        });
+         //   debugger
+            console.log((totalCount - downloadInfoList.length) + "/" + totalCount +  " download completed from " + options.url + " to " + filename);
+            exports.recursivelyDownload(downloadInfoList, totalCount);
+        })
+
 };

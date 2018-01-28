@@ -2,9 +2,30 @@ var DownLoader = require('./DownLoader');
 
 var sTKTerrainDownloaderUtil = require('./STKTerrainDownloaderUtil');
 
-var rootPath = "H:/CesiumData/Terrain/no_watermask_no_vertexnormal";
+var rootPath = "E:/CesiumData/assets.agi.com/stk-terrain/world/watermask_vertexnormal";
 
-var downloadInfoList = sTKTerrainDownloaderUtil.prepareDownloadInfoList(rootPath, 0, 9, -180, -90, 360, 180);
+var startLevel = 0;
+var endLevel = 8;
 
-DownLoader.recursivelyDownload(downloadInfoList);
+var left = -180;
+var right = 180;
+var width = right - left;
 
+var bottom = -90;
+var top = 90;
+var height = top - bottom;
+
+var extensionList = [];
+
+extensionList.push("octvertexnormals");
+extensionList.push("watermask");
+
+var downloadInfoList = sTKTerrainDownloaderUtil.prepareDownloadInfoList(rootPath, startLevel, endLevel, left, bottom, width, height, extensionList);
+
+console.log("total download count = ", downloadInfoList.length);
+
+DownLoader.recursivelyDownload(downloadInfoList, downloadInfoList.length);
+
+process.on('uncaughtException', function (err) {
+   console.log(err);
+});

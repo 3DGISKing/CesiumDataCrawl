@@ -11,18 +11,14 @@ function getTerrainUrl(x, y, level) {
     var version = "1.31376.0";
     tileUrlTemplate = tileUrlTemplate.replace('{version}', version);
 
-    var yTiles = GeographicTilingSchema.getNumberOfYTilesAtLevel(level);
-
-    var tmsY = (yTiles - y - 1);
-
     //noinspection UnnecessaryLocalVariableJS,JSCheckFunctionSignatures
-    var url = tileUrlTemplate.replace('{z}', level).replace('{x}', x).replace('{y}', tmsY);
+    var url = tileUrlTemplate.replace('{z}', level).replace('{x}', x).replace('{y}', y);
 
     return url;
 }
 
 function getTerranFileName(path, x, y, level) {
-    return path + "/" + level + "/" + x + "/" + y + ".terrain.zip";
+    return path + "/" + level + "/" + x + "/" + y + ".terrain"; // note that  gzip file format
 }
 
 /**
@@ -33,8 +29,9 @@ function getTerranFileName(path, x, y, level) {
  * @param {number} bottom  in degrees
  * @param {number} width in degrees
  * @param {number} height in degrees
+ * @param {Array} extensionsList
  */
-module.exports.prepareDownloadInfoList = function(path, startLevel, endLevel, left, bottom, width, height) {
+module.exports.prepareDownloadInfoList = function(path, startLevel, endLevel, left, bottom, width, height, extensionsList) {
     width = CesiumMath.toRadians(width);
     height = CesiumMath.toRadians(height);
     left = CesiumMath.toRadians(left);
@@ -44,6 +41,21 @@ module.exports.prepareDownloadInfoList = function(path, startLevel, endLevel, le
     var topOrNorth = bottom + height;
 
     var infoList = [];
+
+    var headers = null;
+
+    if (extensionsList == null || extensionsList.length == 0) {
+        headers = {
+            'Accept': 'application/vnd.quantized-mesh,application/octet-stream;q=0.9,*/*;q=0.01'
+        };
+    }
+    else {
+        var extensions = extensionsList.join('-');
+
+        headers = {
+            'Accept': 'application/vnd.quantized-mesh;extensions=' + extensions + ',application/octet-stream;q=0.9,*/*;q=0.01'
+        };
+    }
 
     for (var level = startLevel; level <= endLevel; level++){
         var res = GeographicTilingSchema.positionToTileXY(left, topOrNorth, level);
@@ -73,7 +85,8 @@ module.exports.prepareDownloadInfoList = function(path, startLevel, endLevel, le
                  }
 
                 var url = getTerrainUrl(x, y, level);
-                var headers = [];
+
+
 
                 infoList.push({
                     url: url,

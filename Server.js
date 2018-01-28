@@ -61,7 +61,7 @@
         next();
     });
 
-    var dataPath = "H:\CesiumData";
+    var dataPath = "E:\CesiumData";
     // app.use(express.static(__dirname));
 
     function checkGzipAndNext(req, res, next) {
@@ -84,7 +84,7 @@
     }
 
     // 확장자가 이러한 형식일 때는 파일시트템에서 읽어보아서 gzip 형식인가를 검사하고 만일 gzip 이라면 response header 를 수정해준다.
-    var knownTilesetFormats = [/\.b3dm/, /\.pnts/, /\.i3dm/, /\.cmpt/, /\.glb/, /tileset.*\.json$/];
+    var knownTilesetFormats = [/\.b3dm/, /\.pnts/, /\.i3dm/, /\.cmpt/, /\.glb/, /tileset.*\.json$/, /\.terrain/];
     app.get(knownTilesetFormats, checkGzipAndNext);
 
     app.use(express.static(dataPath));
