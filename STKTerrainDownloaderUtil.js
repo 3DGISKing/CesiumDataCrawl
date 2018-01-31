@@ -23,7 +23,7 @@ function getTerranFileName(path, x, y, level) {
     return path + "/" + level + "/" + x + "/" + y + ".terrain"; // note that  gzip file format
 }
 
-function checkAvailabilty(x, y, level) {
+function checkAvailability(x, y, level) {
     var rangesAtLevel = availableTiles[level];
 
     for (var rangeIndex = 0; rangeIndex < rangesAtLevel.length; ++rangeIndex) {
@@ -99,14 +99,20 @@ module.exports.prepareDownloadInfoList = function(path, startLevel, endLevel, le
         var endTileX = res.x;
         var endTileY = res.y;
 
+        var yTiles = GeographicTilingSchema.getNumberOfYTilesAtLevel(level);
+
         for (var x = startTileX; x <= endTileX; x++) {
             for (var y = startTileY; y <= endTileY; y++) {
-                if(!checkAvailabilty(x, y, level)) {
+                // important for y coordinate
+
+                var tmsY = (yTiles - y - 1);
+
+                /*if(!checkAvailability(x, y, level)) {
                     console.log("x = " + x + " y = " + y + " level = " + level + " not available!");
                     continue;
-                }
+                }*/
 
-                var filename = getTerranFileName(path, x, y, level);
+                var filename = getTerranFileName(path, x, tmsY, level);
 
                 if (fs.existsSync(filename)) {
                      const stats = fs.statSync(filename);
@@ -120,7 +126,7 @@ module.exports.prepareDownloadInfoList = function(path, startLevel, endLevel, le
                      }
                  }
 
-                var url = getTerrainUrl(x, y, level);
+                var url = getTerrainUrl(x, tmsY, level);
 
                 infoList.push({
                     url: url,

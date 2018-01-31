@@ -95,9 +95,9 @@ WebMercatorTilingScheme.prototype.positionToTileXY = function(position, level, r
     var xTiles = this.getNumberOfXTilesAtLevel(level);
     var yTiles = this.getNumberOfYTilesAtLevel(level);
 
-    var overallWidth = 40075016.68557849; //this._rectangleNortheastInMeters.x - this._rectangleSouthwestInMeters.x;
+    var overallWidth = this._rectangleNortheastInMeters.x - this._rectangleSouthwestInMeters.x;
     var xTileWidth = overallWidth / xTiles;
-    var overallHeight = 20037508.342789244; //this._rectangleNortheastInMeters.y - this._rectangleSouthwestInMeters.y;
+    var overallHeight = this._rectangleNortheastInMeters.y - this._rectangleSouthwestInMeters.y;
     var yTileHeight = overallHeight / yTiles;
 
     var projection = this._projection;

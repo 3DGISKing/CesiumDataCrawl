@@ -82,7 +82,7 @@ BingMapsImageDownloaderUtil.prototype.prepareDownloadInfoList = function(path, s
     width = CesiumMath.toRadians(width);
     height = CesiumMath.toRadians(height);
     left = CesiumMath.toRadians(left);
-    bottom = CesiumMath. toRadians(bottom);
+    bottom = CesiumMath.toRadians(bottom);
 
     var rightOrEast = left + width;
     var topOrNorth = bottom + height;
