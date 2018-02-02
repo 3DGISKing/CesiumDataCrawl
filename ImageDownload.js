@@ -16,26 +16,27 @@ var koreaBottom = 34;
 var koreaTop = 44;
 var koreaHeight = koreaTop - koreaBottom;
 
-var left = -180;
-var right = 180;
-var width = right - left;
+var worldLeft = -180;
+var worldRight = 180;
+var worldWidth = worldRight - worldLeft;
 
-var bottom = -80; //  note Web Mercartor Latitude Range
-var top = 80; //  note Web Mercartor Latitude Range
-var height = top - bottom;
+var worldBottom = -80; //  note Web Mercartor Latitude Range
+var worldTop = 80; //  note Web Mercartor Latitude Range
+var worldHeight = worldTop - worldBottom;
 
 /**
  *  note Web Mercartor Latitude Range
  */
 // for entire world
-//var downloadInfoList = bingMapsImageUtil.prepareDownloadInfoList(rootPath, startLevel, endLevel, left, bottom, width, height);
+//var downloadInfoList = bingMapsImageUtil.prepareDownloadInfoList(rootPath, startLevel, endLevel, worldLeft, worldBottom, worldWidth, worldHeight);
 
 // for only korea
 var downloadInfoList = bingMapsImageUtil.prepareDownloadInfoList(rootPath, startLevel, endLevel, koreaLeft, koreaBottom, koreaWidth, koreaHeight);
 
 console.log("total download count = ", downloadInfoList.length);
 
-DownLoader.recursivelyDownload(downloadInfoList, downloadInfoList.length);
+var timeout = 1000; // 1s
+DownLoader.recursivelyDownload(downloadInfoList, downloadInfoList.length, timeout);
 
 process.on('uncaughtException', function (err) {
     console.log(err);

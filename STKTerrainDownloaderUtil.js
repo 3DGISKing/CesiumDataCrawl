@@ -107,10 +107,10 @@ module.exports.prepareDownloadInfoList = function(path, startLevel, endLevel, le
 
                 var tmsY = (yTiles - y - 1);
 
-                /*if(!checkAvailability(x, y, level)) {
+                if(!checkAvailability(x, y, level)) {
                     console.log("x = " + x + " y = " + y + " level = " + level + " not available!");
                     continue;
-                }*/
+                }
 
                 var filename = getTerranFileName(path, x, tmsY, level);
 

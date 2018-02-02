@@ -2,6 +2,7 @@ var fs = require('fs');
 var path = require('path');
 //noinspection NpmUsedModulesInstalled
 var request = require('request');
+var util = require('./Util');
 
 var failedDownloadInfoList = [];
 
@@ -21,7 +22,7 @@ function mkDirPath(dirPath)
     }
 }
 
-exports.recursivelyDownload = function(downloadInfoList, totalCount){
+exports.recursivelyDownload = function(downloadInfoList, totalCount, timeout){
     if (downloadInfoList.length <= 0) {
         if(failedDownloadInfoList.length == 0) {
             console.log("all download completed!");
@@ -33,7 +34,7 @@ exports.recursivelyDownload = function(downloadInfoList, totalCount){
             downloadInfoList = failedDownloadInfoList;
             failedDownloadInfoList = [];
 
-            exports.recursivelyDownload(downloadInfoList, totalCount);
+            exports.recursivelyDownload(downloadInfoList, totalCount, timeout);
         }
 
         return;
@@ -43,7 +44,8 @@ exports.recursivelyDownload = function(downloadInfoList, totalCount){
 
     var options = {
         url: downloadInfo.url,
-        headers: downloadInfo.headers
+        headers: downloadInfo.headers,
+        timeout: timeout
     };
 
     var filename = downloadInfo.filename;
@@ -53,12 +55,16 @@ exports.recursivelyDownload = function(downloadInfoList, totalCount){
         mkDirPath(folderPath);
     }
 
+    var currentCount = downloadInfoList.length;
+    var remainingTimeString = util.secondsToString(timeout * currentCount / 1000);
+    remainingTimeString = " max remaining time: " + remainingTimeString;
+
     request
         .get(options)
         .on('response', function () {
            // debugger
             if (this.response.statusCode == 404) {
-                console.log((totalCount - downloadInfoList.length) + "/" + totalCount  + " 404 " + downloadInfo.url + " File or directory not found");
+                console.log((totalCount - currentCount) + "/" + totalCount  + " 404 " + downloadInfo.url + " File or directory not found");
 
                 if (fs.existsSync(filename)) {
                     fs.unlinkSync(filename);
@@ -71,7 +77,7 @@ exports.recursivelyDownload = function(downloadInfoList, totalCount){
             }
         })
         .on('error', function(err) {
-            console.log((totalCount - downloadInfoList.length) + "/" + totalCount + " error occurs during downloading " + downloadInfo.url + " error code = " + err.code);
+            console.log((totalCount - currentCount) + "/" + totalCount + " error occurs during downloading " + downloadInfo.url + " error code = " + err.code);
 
             if (fs.existsSync(filename)) {
                  fs.unlinkSync(filename);
@@ -88,10 +94,9 @@ exports.recursivelyDownload = function(downloadInfoList, totalCount){
         .on('close', function () {
            // debugger
             if(this.bytesWritten > 0) {
-                console.log((totalCount - downloadInfoList.length) + "/" + totalCount +  " download completed from " + options.url + " to " + filename);
+                console.log((totalCount - currentCount) + "/" + totalCount +  " download completed from " + options.url + " to " + filename + remainingTimeString);
             }
 
-            exports.recursivelyDownload(downloadInfoList, totalCount);
+            exports.recursivelyDownload(downloadInfoList, totalCount, timeout);
         })
-
 };

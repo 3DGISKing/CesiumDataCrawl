@@ -2,8 +2,8 @@ var DownLoader = require('./DownLoader');
 
 var sTKTerrainDownloaderUtil = require('./STKTerrainDownloaderUtil');
 
-var startLevel = 13;
-var endLevel = 13;
+var startLevel = 0;
+var endLevel = 8;
 
 var koreaLeft = 124;
 var koreaRight = 131;
@@ -13,18 +13,18 @@ var koreaBottom = 34;
 var koreaTop = 44;
 var koreaHeight = koreaTop - koreaBottom;
 
-var left = -180;
-var right = 180;
-var width = right - left;
+var worldLeft = -180;
+var worldRight = 180;
+var worldWidth = worldRight - worldLeft;
 
-var bottom = -90;
-var top = 90;
-var height = top - bottom;
+var worldBottom = -90;
+var worldTop = 90;
+var worldHeight = worldTop - worldBottom;
 
 var extensionList = [];
 
 extensionList.push("octvertexnormals");
-extensionList.push("watermask");
+//extensionList.push("watermask");
 
 var subPath = "";
 
@@ -41,7 +41,6 @@ else if (extensionList.length == 1) {
    else {
       throw new Error("invalid extension!");
    }
-
 }
 else if(extensionList.length == 2) {
     subPath = "watermask_vertexnormal";
@@ -54,14 +53,16 @@ var rootPath = "E:/CesiumData/assets.agi.com/stk-terrain/world/";
 rootPath += subPath;
 
 //for entire world
-//var downloadInfoList = sTKTerrainDownloaderUtil.prepareDownloadInfoList(rootPath, startLevel, endLevel, left, bottom, width, height, extensionList);
+var downloadInfoList = sTKTerrainDownloaderUtil.prepareDownloadInfoList(rootPath, startLevel, endLevel, worldLeft, worldBottom, worldWidth, worldHeight, extensionList);
 
 //for only korea
-var downloadInfoList = sTKTerrainDownloaderUtil.prepareDownloadInfoList(rootPath, startLevel, endLevel, koreaLeft, koreaBottom, koreaWidth, koreaHeight, extensionList);
+//var downloadInfoList = sTKTerrainDownloaderUtil.prepareDownloadInfoList(rootPath, startLevel, endLevel, koreaLeft, koreaBottom, koreaWidth, koreaHeight, extensionList);
 
 console.log("total download Info count = ", downloadInfoList.length);
 
-DownLoader.recursivelyDownload(downloadInfoList, downloadInfoList.length);
+var timeout = 1000; // 1s
+
+DownLoader.recursivelyDownload(downloadInfoList, downloadInfoList.length, timeout);
 
 process.on('uncaughtException', function (err) {
    console.log(err);
