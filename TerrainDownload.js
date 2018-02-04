@@ -1,30 +1,19 @@
 var DownLoader = require('./DownLoader');
-
 var sTKTerrainDownloaderUtil = require('./STKTerrainDownloaderUtil');
 
-var startLevel = 0;
-var endLevel = 8;
+var startLevel = parseInt(process.argv[2]);
+var endLevel = parseInt(process.argv[3]);
+var requestRect = require(process.argv[4]);
+requestRect = requestRect.RequestRect();
 
-var koreaLeft = 124;
-var koreaRight = 131;
-var koreaWidth = koreaRight- koreaLeft;
-
-var koreaBottom = 34;
-var koreaTop = 44;
-var koreaHeight = koreaTop - koreaBottom;
-
-var worldLeft = -180;
-var worldRight = 180;
-var worldWidth = worldRight - worldLeft;
-
-var worldBottom = -90;
-var worldTop = 90;
-var worldHeight = worldTop - worldBottom;
+console.log("startLevel = " + startLevel);
+console.log("endLevel = " + endLevel);
+console.log("requestRect = " + requestRect.name);
 
 var extensionList = [];
 
-extensionList.push("octvertexnormals");
-//extensionList.push("watermask");
+//extensionList.push("octvertexnormals");
+extensionList.push("watermask");
 
 var subPath = "";
 
@@ -52,11 +41,7 @@ else {
 var rootPath = "E:/CesiumData/assets.agi.com/stk-terrain/world/";
 rootPath += subPath;
 
-//for entire world
-var downloadInfoList = sTKTerrainDownloaderUtil.prepareDownloadInfoList(rootPath, startLevel, endLevel, worldLeft, worldBottom, worldWidth, worldHeight, extensionList);
-
-//for only korea
-//var downloadInfoList = sTKTerrainDownloaderUtil.prepareDownloadInfoList(rootPath, startLevel, endLevel, koreaLeft, koreaBottom, koreaWidth, koreaHeight, extensionList);
+var downloadInfoList = sTKTerrainDownloaderUtil.prepareDownloadInfoList(rootPath, startLevel, endLevel, requestRect.left, requestRect.bottom, requestRect.width, requestRect.height, extensionList);
 
 console.log("total download Info count = ", downloadInfoList.length);
 
