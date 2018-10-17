@@ -1,0 +1,23 @@
+{
+  "name": "cesiumdatacrawl",
+  "version": "1.0.0",
+  "description": "Sometimes we need to run Cesium without the internet connection.\r Usually, all Cesium data such as imagery, the terrain is streamed from several remote servers.\r How can I get Cesium data?\r Please use this, CesiumDataCrawl.",
+  "main": "BingMapsImageDownloaderUtil.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Wujingli/CesiumDataCrawl.git"
+  },
+  "author": "jingliwu",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Wujingli/CesiumDataCrawl/issues"
+  },
+  "homepage": "https://github.com/Wujingli/CesiumDataCrawl#readme",
+  "dependencies": {
+    "request": "^2.88.0"
+  }
+}
