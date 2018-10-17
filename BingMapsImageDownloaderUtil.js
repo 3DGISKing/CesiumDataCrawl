@@ -8,18 +8,12 @@ var WebMercatorTilingScheme = require('./WebMercatorTilingScheme');
  * @constructor
  *
  * @param {Object} options Object with the following properties:
- * @param {String} options.url The url of the Bing Maps server hosting the imagery.
- * @param {String} [options.mapStyle=BingMapsStyle.AERIAL] The type of Bing Maps
- *        imagery to load.
- *
+
  * @see {@link http://msdn.microsoft.com/en-us/library/ff701713.aspx|Bing Maps REST Services}
  * @see {@link http://www.w3.org/TR/cors/|Cross-Origin Resource Sharing}
  */
 
 function BingMapsImageDownloaderUtil(options) {
-    this._url = options.url;
-    this._mapStyle = options.mapStyle;
-
     this._imageUrlTemplate = 'http://ecn.{subdomain}.tiles.virtualearth.net/tiles/a{quadkey}.jpeg?g=5979';
     this._imageUrlSubdomains = ['t0', 't1', 't2', 't3'];
 
