@@ -1,5 +1,5 @@
-var DownLoader = require('./DownLoader');
-var sTKTerrainDownloaderUtil = require('./STKTerrainDownloaderUtil');
+var DownLoader = require('./../Downloader');
+var sTKTerrainDownloaderUtil = require('./../STKTerrainDownloaderUtil');
 
 var startLevel = parseInt(process.argv[2]);
 var endLevel = parseInt(process.argv[3]);

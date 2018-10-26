@@ -1,8 +1,8 @@
 var fs = require('fs');
 const url = require('url');
 var request = require('request');
-var defined = require("./defined");
-var DownLoader = require('./DownLoader');
+var defined = require("./../defined");
+var DownLoader = require('./../Downloader');
 
 var basePath = "https://beta.cesium.com/api/assets/1461?access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJkYWJmM2MzNS02OWM5LTQ3OWItYjEyYS0xZmNlODM5ZDNkMTYiLCJpZCI6NDQsImFzc2V0cyI6WzE0NjFdLCJpYXQiOjE0OTkyNjQ3NDN9.vuR75SqPDKcggvUrG_vpx0Av02jdiAxnnB1fNf-9f7s";
 console.log("basePath = " + basePath);

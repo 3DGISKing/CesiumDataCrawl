@@ -5,6 +5,7 @@
   "main": "BingMapsImageDownloaderUtil.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "bingMapsImageDownload": "node Dist/BingMapsImageDownload.js D:, 1, 5,  ",
     "start": "node server.js"
   },
   "repository": {

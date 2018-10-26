@@ -6,6 +6,10 @@ var bingMapsImageUtil = new BingMapsImageDownloaderUtil({});
 
 var savePath =__dirname + "/../CesiumData/Image/BingMaps";
 
+var qq = parseInt(process.argv[2]);
+
+console.log(qq);
+
 var startLevel = 1; // parseInt(process.argv[2]);
 var endLevel = 5;   // parseInt(process.argv[3]);
 
